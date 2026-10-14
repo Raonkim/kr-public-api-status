@@ -1,1 +1,7 @@
-[]
+[
+ {
+  "id": "github-actions",
+  "label": "GitHub Actions (해외 클라우드)",
+  "scope": "overseas"
+ }
+]
