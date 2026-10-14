@@ -1,0 +1,6 @@
+{
+  "name": "kr-public-api-status",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test", "probe": "node probe.mjs" }
+}

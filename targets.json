@@ -1,0 +1,285 @@
+{
+  "_comment": "인증키 없이 부를 수 있는 단계까지만 잰다. expect가 맞으면 '응답함'. level: L2 = 키 없음 응답 서명 확인(게이트웨이 생존), L4 = 공개 샘플로 실제 데이터와 필드 구조까지 확인. networkCheck는 측정하는 쪽 회선 확인용으로 한국 공공기관과 무관한 곳을 쓴다. overseasBlocked: 2026-10-10 해외 측정 노드(check-host.net)에서 연결이 막힌 곳. 해외 측정 위치에서 이 대상의 연결 실패만 '해외에서 닿지 않음'으로 보인다.",
+  "networkCheck": {
+    "url": "https://www.gstatic.com/generate_204",
+    "status": 204
+  },
+  "targets": [
+    {
+      "id": "kma-vilage",
+      "name": "기상청 단기예보",
+      "org": "기상청",
+      "group": "공공데이터포털 게이트웨이",
+      "level": "L2",
+      "url": "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?dataType=JSON&nx=55&ny=127",
+      "expect": {
+        "bodyIncludes": "SERVICE_KEY_IS_NULL"
+      },
+      "retired": {
+        "bodyIncludes": "NO_OPENAPI_SERVICE_ERROR"
+      },
+      "overseasBlocked": true
+    },
+    {
+      "id": "molit-apt",
+      "name": "아파트 매매 실거래가",
+      "org": "국토교통부",
+      "group": "공공데이터포털 게이트웨이",
+      "level": "L2",
+      "url": "https://apis.data.go.kr/1613000/RTMSDataSvcAptTrade/getRTMSDataSvcAptTrade?LAWD_CD=11110&DEAL_YMD=202609",
+      "expect": {
+        "bodyIncludes": "SERVICE_KEY_IS_NULL"
+      },
+      "retired": {
+        "bodyIncludes": "NO_OPENAPI_SERVICE_ERROR"
+      },
+      "overseasBlocked": true
+    },
+    {
+      "id": "airkorea",
+      "name": "대기오염 실시간 측정",
+      "org": "한국환경공단",
+      "group": "공공데이터포털 게이트웨이",
+      "level": "L2",
+      "url": "https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?returnType=json",
+      "expect": {
+        "bodyIncludes": "SERVICE_KEY_IS_NULL"
+      },
+      "retired": {
+        "bodyIncludes": "NO_OPENAPI_SERVICE_ERROR"
+      },
+      "overseasBlocked": true
+    },
+    {
+      "id": "holiday",
+      "name": "특일정보(공휴일)",
+      "org": "한국천문연구원",
+      "group": "공공데이터포털 게이트웨이",
+      "level": "L2",
+      "url": "https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo?solYear=2026&solMonth=10",
+      "expect": {
+        "bodyIncludes": "SERVICE_KEY_IS_NULL"
+      },
+      "retired": {
+        "bodyIncludes": "NO_OPENAPI_SERVICE_ERROR"
+      },
+      "overseasBlocked": true
+    },
+    {
+      "id": "bldhub",
+      "name": "건축물대장 표제부",
+      "org": "국토교통부",
+      "group": "공공데이터포털 게이트웨이",
+      "level": "L2",
+      "url": "https://apis.data.go.kr/1613000/BldRgstHubService/getBrTitleInfo?sigunguCd=11680&bjdongCd=10300",
+      "expect": {
+        "bodyIncludes": "SERVICE_KEY_IS_NULL"
+      },
+      "retired": {
+        "bodyIncludes": "NO_OPENAPI_SERVICE_ERROR"
+      },
+      "overseasBlocked": true
+    },
+    {
+      "id": "tour",
+      "name": "관광정보 TourAPI",
+      "org": "한국관광공사",
+      "group": "공공데이터포털 게이트웨이",
+      "level": "L2",
+      "url": "https://apis.data.go.kr/B551011/KorService2/areaBasedList2?MobileOS=ETC&MobileApp=status",
+      "expect": {
+        "bodyIncludes": "SERVICE_KEY_IS_NULL"
+      },
+      "retired": {
+        "bodyIncludes": "NO_OPENAPI_SERVICE_ERROR"
+      },
+      "overseasBlocked": true
+    },
+    {
+      "id": "odcloud-nts",
+      "name": "사업자등록 상태조회",
+      "org": "국세청",
+      "group": "공공데이터포털 odcloud",
+      "level": "L2",
+      "url": "https://api.odcloud.kr/api/nts-businessman/v1/status",
+      "method": "POST",
+      "expect": {
+        "bodyIncludes": "\"code\":-401"
+      }
+    },
+    {
+      "id": "seoul-bus",
+      "name": "서울 버스 정류소",
+      "org": "서울특별시",
+      "group": "기관 직접 운영",
+      "level": "L2",
+      "url": "http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?arsId=01001",
+      "expect": {
+        "bodyIncludes": "serviceKey 파라미터가 필요합니다"
+      }
+    },
+    {
+      "id": "neis-school",
+      "name": "NEIS 학교기본정보",
+      "org": "교육부",
+      "group": "기관 직접 운영",
+      "level": "L4",
+      "url": "https://open.neis.go.kr/hub/schoolInfo?Type=json&pIndex=1&pSize=1",
+      "expect": {
+        "jsonPath": "schoolInfo.0.head.1.RESULT.CODE",
+        "equals": "INFO-000"
+      },
+      "rows": "schoolInfo.1.row"
+    },
+    {
+      "id": "law-drf",
+      "name": "국가법령정보 DRF",
+      "org": "법제처",
+      "group": "기관 직접 운영",
+      "level": "L2",
+      "url": "https://www.law.go.kr/DRF/lawSearch.do?target=law&type=XML",
+      "expect": {
+        "bodyIncludes": "필수입력요소 검증에 실패"
+      },
+      "overseasBlocked": true
+    },
+    {
+      "id": "kosis",
+      "name": "KOSIS 통계목록",
+      "org": "국가데이터처",
+      "group": "기관 직접 운영",
+      "level": "L2",
+      "url": "https://kosis.kr/openapi/statisticsList.do?method=getList&format=json",
+      "expect": {
+        "bodyIncludes": "인증KEY값이 누락"
+      },
+      "overseasBlocked": true
+    },
+    {
+      "id": "dart",
+      "name": "OpenDART 기업개황",
+      "org": "금융감독원",
+      "group": "기관 직접 운영",
+      "level": "L2",
+      "url": "https://opendart.fss.or.kr/api/company.json?crtfc_key=&corp_code=00126380",
+      "expect": {
+        "any": [
+          {
+            "status": 302,
+            "locationIncludes": "/error.html"
+          },
+          {
+            "bodyIncludes": "\"status\":\"100\""
+          }
+        ]
+      },
+      "note": "키가 없을 때 /error.html 302 리다이렉트와 status 100 JSON이 번갈아 온다(2026-10-11, 10-14 확인)."
+    },
+    {
+      "id": "seoul-air",
+      "name": "서울 실시간 대기환경",
+      "org": "서울특별시",
+      "group": "기관 직접 운영",
+      "level": "L4",
+      "url": "http://openapi.seoul.go.kr:8088/sample/json/RealtimeCityAir/1/1/",
+      "expect": {
+        "jsonPath": "RealtimeCityAir.RESULT.CODE",
+        "equals": "INFO-000"
+      },
+      "rows": "RealtimeCityAir.row"
+    },
+    {
+      "id": "ecos-tables",
+      "name": "ECOS 통계표 목록",
+      "org": "한국은행",
+      "group": "기관 직접 운영",
+      "level": "L4",
+      "url": "https://ecos.bok.or.kr/api/StatisticTableList/sample/json/kr/1/1/",
+      "expect": {
+        "jsonPath": "StatisticTableList.row.0.STAT_CODE",
+        "exists": true
+      },
+      "rows": "StatisticTableList.row"
+    },
+    {
+      "id": "kipris",
+      "name": "KIPRIS Plus 특허 검색",
+      "org": "특허청",
+      "group": "기관 직접 운영",
+      "level": "L2",
+      "url": "https://plus.kipris.or.kr/kipo-api/kipi/patUtiModInfoSearchSevice/getWordSearch?word=x",
+      "expect": {
+        "bodyIncludes": "<resultCode>10</resultCode>"
+      }
+    },
+    {
+      "id": "foodsafety-recipe",
+      "name": "식품안전나라 조리식품 레시피",
+      "org": "식품의약품안전처",
+      "group": "기관 직접 운영",
+      "level": "L4",
+      "url": "https://openapi.foodsafetykorea.go.kr/api/sample/COOKRCP01/json/1/1",
+      "expect": {
+        "jsonPath": "COOKRCP01.row.0.RCP_NM",
+        "exists": true
+      },
+      "rows": "COOKRCP01.row",
+      "overseasBlocked": true
+    },
+    {
+      "id": "juso",
+      "name": "도로명주소 검색",
+      "org": "행정안전부",
+      "group": "기관 직접 운영",
+      "level": "L2",
+      "url": "https://business.juso.go.kr/addrlink/addrLinkApi.do?keyword=%EC%84%B8%EC%A2%85%EB%A1%9C&resultType=json",
+      "expect": {
+        "bodyIncludes": "\"errorCode\":\"E0001\""
+      },
+      "overseasBlocked": true
+    },
+    {
+      "id": "vworld",
+      "name": "브이월드 지오코딩",
+      "org": "국토교통부",
+      "group": "기관 직접 운영",
+      "level": "L2",
+      "url": "https://api.vworld.kr/req/address?service=address&request=getcoord&version=2.0&address=x&type=road&format=json",
+      "expect": {
+        "bodyIncludes": "PARAM_REQUIRED"
+      },
+      "overseasBlocked": true
+    },
+    {
+      "id": "kma-apihub",
+      "name": "기상청 API허브",
+      "org": "기상청",
+      "group": "기관 직접 운영",
+      "level": "L2",
+      "url": "https://apihub.kma.go.kr/api/typ01/url/kma_sfctm2.php?tm=202610100900&stn=108",
+      "expect": {
+        "bodyIncludes": "유효한 인증키가 아닙니다"
+      },
+      "overseasBlocked": true
+    },
+    {
+      "id": "its",
+      "name": "국가교통정보센터 ITS",
+      "org": "국토교통부",
+      "group": "기관 직접 운영",
+      "level": "L2",
+      "url": "https://openapi.its.go.kr:9443/trafficInfo?type=all&getType=json",
+      "expect": {
+        "bodyIncludes": "\"resultCode\":4005"
+      },
+      "overseasBlocked": true
+    }
+  ],
+  "excluded": [
+    {
+      "id": "gg-localcurrency",
+      "name": "경기데이터드림",
+      "reason": "측정 도구임을 밝힌 User-Agent에는 응답하지 않고 curl·브라우저 User-Agent에만 응답함(2026-10-11 확인). User-Agent를 위장하지 않기 위해 제외."
+    }
+  ]
+}

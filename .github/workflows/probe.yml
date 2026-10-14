@@ -1,0 +1,40 @@
+name: probe
+
+# 정각은 GitHub 예약 실행이 몰려 지연·누락되므로 7분, 37분에 돈다.
+on:
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+
+# 비밀값을 쓰지 않는다. 결과 커밋에 필요한 권한만 준다.
+permissions:
+  contents: write
+
+concurrency:
+  group: probe
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: true
+
+      - name: Measure
+        run: node probe.mjs --location github-actions --scope overseas --label "GitHub Actions (해외 클라우드)"
+
+      - name: Commit results
+        run: |
+          git config user.name "status-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "data: github-actions $(date -u +%Y-%m-%dT%H:%MZ)"
+          for i in 1 2 3; do
+            git pull --rebase --quiet && git push --quiet && exit 0
+            sleep 5
+          done
+          exit 1
