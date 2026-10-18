@@ -2,13 +2,13 @@
  "location": "github-actions",
  "label": "GitHub Actions (해외 클라우드)",
  "scope": "overseas",
- "measuredAt": "2026-10-18T01:27:19.709Z",
+ "measuredAt": "2026-10-18T06:30:45.771Z",
  "valid": true,
  "results": [
   {
    "id": "kma-vilage",
    "http": 401,
-   "ms": 689,
+   "ms": 974,
    "status": "up",
    "reason": "키 없음 응답 정상",
    "schemaChangedAt": null
@@ -16,7 +16,7 @@
   {
    "id": "molit-apt",
    "http": 401,
-   "ms": 702,
+   "ms": 966,
    "status": "up",
    "reason": "키 없음 응답 정상",
    "schemaChangedAt": null
@@ -24,7 +24,7 @@
   {
    "id": "airkorea",
    "http": 401,
-   "ms": 813,
+   "ms": 1097,
    "status": "up",
    "reason": "키 없음 응답 정상",
    "schemaChangedAt": null
@@ -32,7 +32,7 @@
   {
    "id": "holiday",
    "http": 401,
-   "ms": 824,
+   "ms": 1092,
    "status": "up",
    "reason": "키 없음 응답 정상",
    "schemaChangedAt": null
@@ -40,7 +40,7 @@
   {
    "id": "bldhub",
    "http": 401,
-   "ms": 671,
+   "ms": 685,
    "status": "up",
    "reason": "키 없음 응답 정상",
    "schemaChangedAt": null
@@ -48,7 +48,7 @@
   {
    "id": "tour",
    "http": 401,
-   "ms": 136,
+   "ms": 142,
    "status": "up",
    "reason": "키 없음 응답 정상",
    "schemaChangedAt": null
@@ -56,7 +56,7 @@
   {
    "id": "odcloud-nts",
    "http": 401,
-   "ms": 880,
+   "ms": 1576,
    "status": "up",
    "reason": "키 없음 응답 정상",
    "schemaChangedAt": null
@@ -64,7 +64,7 @@
   {
    "id": "seoul-bus",
    "http": 401,
-   "ms": 670,
+   "ms": 978,
    "status": "up",
    "reason": "키 없음 응답 정상",
    "schemaChangedAt": null
@@ -72,7 +72,7 @@
   {
    "id": "neis-school",
    "http": 200,
-   "ms": 1484,
+   "ms": 1799,
    "status": "up",
    "reason": "샘플 데이터 정상",
    "fingerprint": "a38a28331cba",
@@ -80,16 +80,16 @@
   },
   {
    "id": "law-drf",
-   "http": null,
-   "ms": 10056,
-   "status": "down",
-   "reason": "시간 초과",
+   "http": 200,
+   "ms": 6231,
+   "status": "up",
+   "reason": "키 없음 응답 정상",
    "schemaChangedAt": null
   },
   {
    "id": "kosis",
    "http": 200,
-   "ms": 1493,
+   "ms": 1016,
    "status": "up",
    "reason": "키 없음 응답 정상",
    "schemaChangedAt": null
@@ -97,7 +97,7 @@
   {
    "id": "dart",
    "http": 200,
-   "ms": 1027,
+   "ms": 750,
    "status": "up",
    "reason": "키 없음 응답 정상",
    "schemaChangedAt": null
@@ -105,7 +105,7 @@
   {
    "id": "seoul-air",
    "http": 200,
-   "ms": 450,
+   "ms": 1118,
    "status": "up",
    "reason": "샘플 데이터 정상",
    "fingerprint": "7a7d563ab429",
@@ -113,18 +113,17 @@
   },
   {
    "id": "ecos-tables",
-   "http": null,
-   "ms": 10193,
-   "status": "down",
-   "reason": "시간 초과",
+   "http": 200,
+   "ms": 1126,
+   "status": "up",
+   "reason": "샘플 데이터 정상",
    "fingerprint": "4a45174918b6",
-   "fingerprintCarried": true,
    "schemaChangedAt": null
   },
   {
    "id": "kipris",
    "http": 200,
-   "ms": 762,
+   "ms": 1562,
    "status": "up",
    "reason": "키 없음 응답 정상",
    "schemaChangedAt": null
@@ -132,7 +131,7 @@
   {
    "id": "foodsafety-recipe",
    "http": 200,
-   "ms": 916,
+   "ms": 1493,
    "status": "up",
    "reason": "샘플 데이터 정상",
    "fingerprint": "013e410cf593",
@@ -141,7 +140,7 @@
   {
    "id": "juso",
    "http": 200,
-   "ms": 569,
+   "ms": 1249,
    "status": "up",
    "reason": "키 없음 응답 정상",
    "schemaChangedAt": null
@@ -149,7 +148,7 @@
   {
    "id": "vworld",
    "http": 502,
-   "ms": 559,
+   "ms": 980,
    "status": "down",
    "reason": "서버 오류 HTTP 502",
    "schemaChangedAt": null
@@ -157,7 +156,7 @@
   {
    "id": "kma-apihub",
    "http": 401,
-   "ms": 756,
+   "ms": 1804,
    "status": "up",
    "reason": "키 없음 응답 정상",
    "schemaChangedAt": null
@@ -165,7 +164,7 @@
   {
    "id": "its",
    "http": null,
-   "ms": 10448,
+   "ms": 10386,
    "status": "down",
    "reason": "시간 초과",
    "schemaChangedAt": null
