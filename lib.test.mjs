@@ -118,3 +118,11 @@ test('해외 측정: 해외 차단 대상의 연결 실패만 해외에서 닿�
   assert.equal(currentState(T['holiday'], loc(timeout('holiday'), 'domestic')).state, 'down'); // 국내 측정
   assert.ok(T['neis-school'].overseasBlocked === undefined && T['holiday'].overseasBlocked === true);
 });
+
+test('측정 중단 기준은 실제 측정 간격에 맞춘다', async () => {
+  const { staleThresholdMs } = await import('./docs/state.js');
+  const runs = (minutes) => minutes.map((m) => ({ t: new Date(Date.UTC(2026, 9, 18) + m * 60000).toISOString() }));
+  assert.equal(staleThresholdMs(runs([0, 30, 60, 90])), 90 * 60000);
+  assert.equal(staleThresholdMs(runs([0, 200, 410, 620])), 3 * 210 * 60000);
+  assert.equal(staleThresholdMs([]), 90 * 60000);
+});

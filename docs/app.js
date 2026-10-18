@@ -1,13 +1,12 @@
 // 상태판 렌더링. 데이터는 같은 저장소의 data/ 아래 JSON만 읽는다.
-import { currentState } from './state.js';
+import { currentState, staleThresholdMs } from './state.js';
 
 const LABEL = {
   up: '응답함', flaky: '일시 실패', down: '응답 없음', changed: '형식 변경', retired: '폐기됨', denied: '접근 거부',
   unreachable: '해외에서 닿지 않음', stale: '측정 중단', invalid: '측정 무효', none: '측정 없음',
 };
 const LONG = { u: 'up', d: 'down', r: 'retired', c: 'changed', x: 'denied' };
-const SPARK = 48; // 최근 24시간(30분 간격)
-const STALE_MS = 90 * 60 * 1000; // 30분 주기에서 세 번 연속 빠지면 측정 중단으로 본다
+const SPARK = 48; // 최근 48회
 
 const $ = (id) => document.getElementById(id);
 function el(tag, text, cls) {
@@ -70,11 +69,11 @@ async function main() {
   for (const l of locations) {
     try {
       const [latest, history] = await Promise.all([getJson(`data/${l.id}/latest.json`), getJson(`data/${l.id}/history.json`)]);
-      const stale = Date.now() - new Date(latest.measuredAt).getTime() > STALE_MS;
+      const stale = Date.now() - new Date(latest.measuredAt).getTime() > staleThresholdMs(history.runs);
       locs.push({ ...l, scope: latest.scope || l.scope, latest, history, stale });
     } catch { /* 아직 측정 기록이 없는 위치는 건너뛴다 */ }
   }
-  if (locs.length === 0) { $('updated').textContent = '아직 측정 기록이 없습니다. 첫 측정은 30분 안에 올라옵니다.'; return; }
+  if (locs.length === 0) { $('updated').textContent = '아직 측정 기록이 없습니다.'; return; }
 
   $('updated').textContent = locs.map((l) => {
     let s = `${l.label}: 마지막 측정 ${kst(l.latest.measuredAt)}`;

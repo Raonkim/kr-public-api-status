@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="no-referrer">
   <title>공공 API 상태판</title>
-  <meta name="description" content="한국 공공데이터 API가 응답하는지, 어디서 닿는지 30분마다 측정해 공개합니다.">
+  <meta name="description" content="한국 공공데이터 API가 응답하는지, 어디서 닿는지 주기적으로 측정해 공개합니다.">
   <link rel="stylesheet" href="style.css">
   <script type="module" src="app.js"></script>
 </head>
@@ -14,9 +14,9 @@
 <main>
   <header>
     <h1>공공 API 상태판</h1>
-    <p class="lede">한국 공공데이터 API가 응답하는지 30분마다 잽니다. 인증키 없이 잴 수 있는 단계까지만 재며, 응답 본문은 저장하지 않습니다.</p>
+    <p class="lede">한국 공공데이터 API가 응답하는지 주기적으로 잽니다. GitHub 예약 실행은 30분 간격으로 걸어도 실제로는 몇 시간씩 밀릴 수 있습니다. 인증키 없이 잴 수 있는 단계까지만 재며, 응답 본문은 저장하지 않습니다.</p>
     <p id="updated" class="meta" aria-live="polite">불러오는 중…</p>
-    <p id="overseas-only" class="warn" hidden>지금은 해외 클라우드(GitHub Actions)에서만 재고 있습니다. 해외 접속이 막힌 것으로 확인된 API는 '해외에서 닿지 않음'으로 따로 표시하며, 이는 기관 장애가 아닐 가능성이 큽니다. 국내 측정 위치는 준비 중입니다.</p>
+    <p id="overseas-only" class="warn" hidden>지금은 해외 클라우드(GitHub Actions)에서만 재고 있습니다. 해외 접속 제한이 의심되는 API의 연결 실패는 '해외에서 닿지 않음'으로 따로 표시하며, 기관 장애가 아닐 수 있습니다. 국내 측정 위치는 준비 중입니다.</p>
   </header>
 
   <section aria-labelledby="t-h">
@@ -36,9 +36,9 @@
       <dt><span class="badge flaky">일시 실패</span></dt><dd>이번 측정에서만 실패했습니다. 두 번 연속 실패해야 '응답 없음'으로 봅니다.</dd>
       <dt><span class="badge down">응답 없음</span></dt><dd>두 번 연속 연결 실패, 시간 초과(15초), 또는 서버 오류(5xx)입니다.</dd>
       <dt><span class="badge changed">형식 변경</span></dt><dd>응답은 왔지만 정해 둔 형식과 다릅니다. 점검 페이지나 API 개편일 수 있습니다.</dd>
-      <dt><span class="badge unreachable">해외에서 닿지 않음</span></dt><dd>해외 측정 위치에서, 해외 접속이 막힌 것으로 확인된 API(2026-10-10 해외 측정 노드 기준 13곳)에 연결하지 못했습니다. 장애가 아니라 해외 접속 제한일 수 있어 따로 표시합니다. 해외에서도 닿던 API의 실패는 그대로 '응답 없음'으로 보입니다.</dd>
+      <dt><span class="badge unreachable">해외에서 닿지 않음</span></dt><dd>해외 측정 위치에서, 해외 접속 제한이 의심되는 API(2026-10-10 해외 측정 노드에서 막혔던 13곳)에 연결하지 못했습니다. 다만 GitHub Actions에서는 이 중 상당수가 닿습니다. 그 밖의 API의 실패와 서버 오류는 그대로 '응답 없음'으로 보입니다.</dd>
       <dt><span class="badge denied">접근 거부</span></dt><dd>401·403·429 같은 거부 응답입니다. 방화벽이나 호출 제한일 수 있습니다.</dd>
-      <dt><span class="badge stale">측정 중단</span></dt><dd>그 위치의 마지막 측정이 90분보다 오래됐습니다. 보이는 상태는 현재가 아닙니다.</dd>
+      <dt><span class="badge stale">측정 중단</span></dt><dd>그 위치의 마지막 측정이 평소 측정 간격의 3배(최소 90분)보다 오래됐습니다. 보이는 상태는 현재가 아닙니다.</dd>
       <dt><span class="badge retired">폐기됨</span></dt><dd>공공데이터포털이 "서비스가 없거나 폐기됨"이라고 답했습니다.</dd>
     </dl>
     <ul class="notes">
