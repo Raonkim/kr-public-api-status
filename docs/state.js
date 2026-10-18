@@ -1,14 +1,15 @@
 // 화면에 보일 상태를 정한다. 브라우저와 Node 테스트가 같이 쓴다.
 
-// 연결 단계 실패(시간 초과·연결 실패)인지. 서버 오류(5xx)는 해외 차단과 무관하다.
-export function isConnectFailure(result) {
-  return Boolean(result?.reason) && (result.reason.startsWith('시간 초과') || result.reason.startsWith('연결 실패'));
+// 이 측정 위치에서 최근 유효 회차(최대 20회)에 한 번도 성공하지 못한 대상인지.
+// 다른 곳에서 잰 '해외 차단 목록'은 측정 위치(클라우드)마다 맞지 않았으므로, 그 위치의 이력으로만 판단한다.
+// 평소 닿던 곳의 실패는 여기에 걸리지 않아 '응답 없음'으로 그대로 보인다.
+export function neverReachedHere(targetId, runs, minRuns = 6) {
+  const recent = (runs || []).filter((r) => r.v && r.r[targetId]).slice(-20);
+  return recent.length >= minRuns && recent.every((r) => r.r[targetId][0] !== 'u');
 }
 
-// 해외 측정 위치에서, 해외 접속이 막힌 것으로 확인된 대상의 연결 실패만 '해외에서 닿지 않음'으로 부른다.
-// 나머지(해외에서도 닿는 곳의 실패, 5xx)는 실제 장애일 수 있으므로 원래 판정을 그대로 보인다.
-export function isOverseasUnreachable(loc, target, result) {
-  return loc.scope === 'overseas' && Boolean(target.overseasBlocked) && isConnectFailure(result);
+export function isOverseasUnreachable(loc, target) {
+  return loc.scope === 'overseas' && neverReachedHere(target.id, loc.history?.runs);
 }
 
 // 두 번 연속 실패해야 '응답 없음'
@@ -18,7 +19,7 @@ export function currentState(target, loc) {
   const r = loc.latest.results.find((x) => x.id === target.id);
   if (!r) return { state: 'none' };
   if (r.status !== 'down') return { state: r.status, r };
-  if (isOverseasUnreachable(loc, target, r)) return { state: 'unreachable', r };
+  if (isOverseasUnreachable(loc, target)) return { state: 'unreachable', r };
   const runs = loc.history.runs;
   const prev = runs.length >= 2 ? runs[runs.length - 2].r[target.id] : null;
   return { state: prev && prev[0] === 'd' ? 'down' : 'flaky', r };

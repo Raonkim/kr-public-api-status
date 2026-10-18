@@ -1,9 +1,9 @@
 // 상태판 렌더링. 데이터는 같은 저장소의 data/ 아래 JSON만 읽는다.
-import { currentState, staleThresholdMs } from './state.js';
+import { currentState, staleThresholdMs, isOverseasUnreachable } from './state.js';
 
 const LABEL = {
   up: '응답함', flaky: '일시 실패', down: '응답 없음', changed: '형식 변경', retired: '폐기됨', denied: '접근 거부',
-  unreachable: '해외에서 닿지 않음', stale: '측정 중단', invalid: '측정 무효', none: '측정 없음',
+  unreachable: '이 위치에서 늘 실패', stale: '측정 중단', invalid: '측정 무효', none: '측정 없음',
 };
 const LONG = { u: 'up', d: 'down', r: 'retired', c: 'changed', x: 'denied' };
 const SPARK = 48; // 최근 48회
@@ -40,13 +40,38 @@ function spark(target, loc) {
   for (const run of loc.history.runs.slice(-SPARK)) {
     const v = run.r[id];
     let cls = !run.v ? 'invalid' : v ? LONG[v[0]] : 'none';
-    // 이력에는 실패 원인이 없어, 해외 차단 대상의 실패 칸은 모두 회색으로 그린다.
-    if (cls === 'down' && loc.scope === 'overseas' && target.overseasBlocked) cls = 'unreachable';
+    // 이 해외 위치에서 한 번도 닿지 않은 대상의 실패 칸은 회색으로 그린다.
+    if (cls === 'down' && isOverseasUnreachable(loc, target)) cls = 'unreachable';
     const cell = el('i', null, cls);
     cell.title = `${kst(run.t)} ${run.v ? (LABEL[cls] ?? '-') : '측정 무효 회차'}${v ? ` ${v[1]}ms` : ''}`;
     wrap.append(cell);
   }
   return wrap;
+}
+
+// 같은 게이트웨이(apis.data.go.kr)를 거치는 서비스들은 키 없이 재면 같은 신호를 낸다. 한 행으로 묶고,
+// 서비스별로 다른 것(폐기·형식 변경 등)만 따로 적는다.
+const GATEWAY = '공공데이터포털 게이트웨이';
+
+function gatewayCell(members, loc) {
+  const td = cell(members[0], loc);
+  const states = members.map((t) => ({ t, ...currentState(t, loc) }));
+  const up = states.filter((x) => x.state === 'up').length;
+  const odd = states.filter((x) => x.state !== states[0].state);
+  td.append(el('div', `서비스 ${members.length}개 중 ${up}개 응답함`, 'up7'));
+  for (const x of odd) td.append(el('div', `${x.t.name}: ${LABEL[x.state]}`, 'reason'));
+  return td;
+}
+
+// 표 위 한 줄 요약(측정 위치마다)
+function summaryLine(rows, loc) {
+  const count = new Map();
+  for (const t of rows) {
+    const { state } = currentState(t, loc);
+    count.set(state, (count.get(state) || 0) + 1);
+  }
+  const order = ['up', 'flaky', 'down', 'unreachable', 'denied', 'changed', 'retired', 'stale', 'invalid', 'none'];
+  return order.filter((k) => count.get(k)).map((k) => `${LABEL[k]} ${count.get(k)}`).join(' · ');
 }
 
 function cell(target, loc) {
@@ -55,8 +80,7 @@ function cell(target, loc) {
   td.append(el('span', LABEL[state], `badge ${state}`));
   if (r && state !== 'stale') td.append(el('span', ` ${r.ms.toLocaleString('ko-KR')}ms`, 'ms'));
   const u = uptime(target.id, loc.history.runs);
-  const word = loc.scope === 'overseas' ? '도달률' : '응답률';
-  td.append(el('div', u ? `7일 ${word} ${u.pct.toFixed(1)}% (${u.n}회)` : '이력 없음', 'up7'));
+  td.append(el('div', u ? `최근 ${u.n}회 중 ${Math.round((u.pct * u.n) / 100)}회 응답` : '이력 없음', 'up7'));
   td.append(spark(target, loc));
   if (r?.reason && state !== 'up' && state !== 'stale') td.append(el('div', r.reason, 'reason'));
   if (r?.schemaChangedAt) td.append(el('div', `구조 변경 ${kst(r.schemaChangedAt)}`, 'reason'));
@@ -83,6 +107,11 @@ async function main() {
   }).join(' · ');
   $('overseas-only').hidden = !locs.every((l) => l.scope === 'overseas');
 
+  // 게이트웨이 서비스는 대표 1행으로 센다
+  const gateway = targets.targets.filter((t) => t.group === GATEWAY);
+  const rows = [...(gateway.length ? [gateway[0]] : []), ...targets.targets.filter((t) => t.group !== GATEWAY)];
+  $('summary').textContent = locs.map((l) => `${l.label} — ${summaryLine(rows, l)}`).join(' / ');
+
   const head = el('tr');
   head.append(el('th', 'API'), el('th', '단계'));
   for (const l of locs) head.append(el('th', l.label));
@@ -90,8 +119,22 @@ async function main() {
 
   const body = $('board-body');
   body.replaceChildren();
+  if (gateway.length) {
+    const tr = el('tr', null, 'group');
+    const th = el('th', GATEWAY);
+    th.colSpan = 2 + locs.length;
+    tr.append(th);
+    body.append(tr);
+    const row = el('tr');
+    const name = el('td');
+    name.append(el('div', 'apis.data.go.kr', 'name'),
+      el('div', `대표 서비스 ${gateway.length}개로 확인: ${gateway.map((t) => t.name).join(', ')}. 키 없이는 서비스별 상태가 아니라 게이트웨이 상태와 폐기 여부만 보입니다.`, 'org'));
+    row.append(name, el('td', 'L2', 'level'));
+    for (const l of locs) row.append(gatewayCell(gateway, l));
+    body.append(row);
+  }
   let group = null;
-  for (const t of targets.targets) {
+  for (const t of targets.targets.filter((x) => x.group !== GATEWAY)) {
     if (t.group !== group) {
       group = t.group;
       const tr = el('tr', null, 'group');

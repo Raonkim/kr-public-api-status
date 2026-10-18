@@ -105,18 +105,20 @@ test('fingerprint는 값이 아니라 필드 구조만 본다', () => {
   assert.equal(getPath({ a: [{ b: 3 }] }, 'a.0.b'), 3);
 });
 
-test('해외 측정: 해외 차단 대상의 연결 실패만 해외에서 닿지 않음, 나머지는 원래 판정', async () => {
-  const { currentState } = await import('./docs/state.js');
-  const loc = (results, scope = 'overseas') => ({
-    scope, stale: false, latest: { valid: true, results },
-    history: { runs: [{ r: { [results[0].id]: ['d', 1] } }, { r: { [results[0].id]: ['d', 1] } }] },
+test('해외 측정: 이 위치에서 한 번도 닿지 않은 곳만 해외에서 닿지 않음', async () => {
+  const { currentState, neverReachedHere } = await import('./docs/state.js');
+  const hist = (id, codes) => codes.map((c) => ({ v: 1, r: { [id]: [c, 1] } }));
+  const loc = (id, codes, scope = 'overseas') => ({
+    scope, stale: false, history: { runs: hist(id, codes) },
+    latest: { valid: true, results: [{ id, status: 'down', reason: '시간 초과' }] },
   });
-  const timeout = (id) => [{ id, status: 'down', reason: '시간 초과' }];
-  assert.equal(currentState(T['holiday'], loc(timeout('holiday'))).state, 'unreachable');
-  assert.equal(currentState(T['neis-school'], loc(timeout('neis-school'))).state, 'down'); // 해외에서도 닿는 곳
-  assert.equal(currentState(T['holiday'], loc([{ id: 'holiday', status: 'down', reason: '서버 오류 HTTP 502' }])).state, 'down'); // 5xx
-  assert.equal(currentState(T['holiday'], loc(timeout('holiday'), 'domestic')).state, 'down'); // 국내 측정
-  assert.ok(T['neis-school'].overseasBlocked === undefined && T['holiday'].overseasBlocked === true);
+  const never = Array(8).fill('d');
+  const usually = ['u', 'u', 'u', 'u', 'u', 'u', 'd', 'd'];
+  assert.equal(currentState(T['its'], loc('its', never)).state, 'unreachable');
+  assert.equal(currentState(T['holiday'], loc('holiday', usually)).state, 'down'); // 평소 닿던 곳의 장애는 가리지 않는다
+  assert.equal(currentState(T['its'], loc('its', never, 'domestic')).state, 'down'); // 국내 측정은 그대로
+  assert.equal(neverReachedHere('its', hist('its', ['d', 'd'])), false); // 이력이 적으면 판단하지 않는다
+  assert.ok(!config.targets.some((t) => 'overseasBlocked' in t));
 });
 
 test('측정 중단 기준은 실제 측정 간격에 맞춘다', async () => {

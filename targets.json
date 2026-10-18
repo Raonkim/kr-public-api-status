@@ -1,5 +1,5 @@
 {
-  "_comment": "인증키 없이 부를 수 있는 단계까지만 잰다. expect가 맞으면 '응답함'. level: L2 = 키 없음 응답 서명 확인(게이트웨이 생존), L4 = 공개 샘플로 실제 데이터와 필드 구조까지 확인. networkCheck는 측정하는 쪽 회선 확인용으로 한국 공공기관과 무관한 곳을 쓴다. overseasBlocked: 2026-10-10 해외 측정 노드(check-host.net)에서 연결이 막힌 곳. 해외 측정 위치에서 이 대상의 연결 실패만 '해외에서 닿지 않음'으로 보인다.",
+  "_comment": "인증키 없이 부를 수 있는 단계까지만 잰다. expect가 맞으면 '응답함'. level: L2 = 키 없음 응답 서명 확인(게이트웨이 생존), L4 = 공개 샘플로 실제 데이터와 필드 구조까지 확인. networkCheck는 측정하는 쪽 회선 확인용으로 한국 공공기관과 무관한 곳을 쓴다.",
   "networkCheck": {
     "url": "https://www.gstatic.com/generate_204",
     "status": 204
@@ -17,8 +17,7 @@
       },
       "retired": {
         "bodyIncludes": "NO_OPENAPI_SERVICE_ERROR"
-      },
-      "overseasBlocked": true
+      }
     },
     {
       "id": "molit-apt",
@@ -32,8 +31,7 @@
       },
       "retired": {
         "bodyIncludes": "NO_OPENAPI_SERVICE_ERROR"
-      },
-      "overseasBlocked": true
+      }
     },
     {
       "id": "airkorea",
@@ -47,8 +45,7 @@
       },
       "retired": {
         "bodyIncludes": "NO_OPENAPI_SERVICE_ERROR"
-      },
-      "overseasBlocked": true
+      }
     },
     {
       "id": "holiday",
@@ -62,8 +59,7 @@
       },
       "retired": {
         "bodyIncludes": "NO_OPENAPI_SERVICE_ERROR"
-      },
-      "overseasBlocked": true
+      }
     },
     {
       "id": "bldhub",
@@ -77,8 +73,7 @@
       },
       "retired": {
         "bodyIncludes": "NO_OPENAPI_SERVICE_ERROR"
-      },
-      "overseasBlocked": true
+      }
     },
     {
       "id": "tour",
@@ -92,8 +87,7 @@
       },
       "retired": {
         "bodyIncludes": "NO_OPENAPI_SERVICE_ERROR"
-      },
-      "overseasBlocked": true
+      }
     },
     {
       "id": "odcloud-nts",
@@ -140,8 +134,7 @@
       "url": "https://www.law.go.kr/DRF/lawSearch.do?target=law&type=XML",
       "expect": {
         "bodyIncludes": "필수입력요소 검증에 실패"
-      },
-      "overseasBlocked": true
+      }
     },
     {
       "id": "kosis",
@@ -152,8 +145,7 @@
       "url": "https://kosis.kr/openapi/statisticsList.do?method=getList&format=json",
       "expect": {
         "bodyIncludes": "인증KEY값이 누락"
-      },
-      "overseasBlocked": true
+      }
     },
     {
       "id": "dart",
@@ -223,8 +215,7 @@
         "jsonPath": "COOKRCP01.row.0.RCP_NM",
         "exists": true
       },
-      "rows": "COOKRCP01.row",
-      "overseasBlocked": true
+      "rows": "COOKRCP01.row"
     },
     {
       "id": "juso",
@@ -235,8 +226,7 @@
       "url": "https://business.juso.go.kr/addrlink/addrLinkApi.do?keyword=%EC%84%B8%EC%A2%85%EB%A1%9C&resultType=json",
       "expect": {
         "bodyIncludes": "\"errorCode\":\"E0001\""
-      },
-      "overseasBlocked": true
+      }
     },
     {
       "id": "vworld",
@@ -247,8 +237,7 @@
       "url": "https://api.vworld.kr/req/address?service=address&request=getcoord&version=2.0&address=x&type=road&format=json",
       "expect": {
         "bodyIncludes": "PARAM_REQUIRED"
-      },
-      "overseasBlocked": true
+      }
     },
     {
       "id": "kma-apihub",
@@ -259,8 +248,7 @@
       "url": "https://apihub.kma.go.kr/api/typ01/url/kma_sfctm2.php?tm=202610100900&stn=108",
       "expect": {
         "bodyIncludes": "유효한 인증키가 아닙니다"
-      },
-      "overseasBlocked": true
+      }
     },
     {
       "id": "its",
@@ -271,8 +259,7 @@
       "url": "https://openapi.its.go.kr:9443/trafficInfo?type=all&getType=json",
       "expect": {
         "bodyIncludes": "\"resultCode\":4005"
-      },
-      "overseasBlocked": true
+      }
     }
   ],
   "excluded": [
