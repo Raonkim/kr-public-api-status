@@ -66,12 +66,14 @@ export function classifyError(err) {
   return { status: STATUS.DOWN, reason: timeout ? '시간 초과' : `연결 실패 (${String(code).slice(0, 40)})` };
 }
 
+// 'd' = 연결 실패·시간 초과(서버에 닿지 못함), 's' = 서버 오류 5xx(서버가 답함). 둘 다 화면에서는 '응답 없음'.
 const SHORT = { up: 'u', down: 'd', retired: 'r', changed: 'c', denied: 'x' };
+const shortCode = (r) => (r.status === 'down' && r.http >= 500 ? 's' : SHORT[r.status]);
 
 // 이력은 측정 위치별로 7일치만 남긴다. 한 회차 = { t, v(유효 여부), r: { id: [상태 한 글자, ms] } }
 export function appendHistory(history, latest, now = new Date(latest.measuredAt)) {
   const run = { t: latest.measuredAt, v: latest.valid ? 1 : 0, r: {} };
-  for (const r of latest.results) run.r[r.id] = [SHORT[r.status], r.ms];
+  for (const r of latest.results) run.r[r.id] = [shortCode(r), r.ms];
   const cutoff = now.getTime() - HISTORY_DAYS * 24 * 3600 * 1000;
   const runs = [...(history?.runs || []), run].filter((x) => new Date(x.t).getTime() >= cutoff);
   return { location: latest.location, runs };

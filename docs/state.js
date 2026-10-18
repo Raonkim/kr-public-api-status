@@ -1,11 +1,12 @@
 // 화면에 보일 상태를 정한다. 브라우저와 Node 테스트가 같이 쓴다.
 
-// 이 측정 위치에서 최근 유효 회차(최대 20회)에 한 번도 성공하지 못한 대상인지.
+// 이 측정 위치의 이력(7일) 전체에서 한 번도 서버에 닿지 못한 대상인지.
+// 연결 실패·시간 초과('d')만 '닿지 못함'으로 센다. 형식 변경·접근 거부·5xx·폐기 응답은 서버가 답한 것이므로 '닿음'이다.
 // 다른 곳에서 잰 '해외 차단 목록'은 측정 위치(클라우드)마다 맞지 않았으므로, 그 위치의 이력으로만 판단한다.
-// 평소 닿던 곳의 실패는 여기에 걸리지 않아 '응답 없음'으로 그대로 보인다.
+// 한 번이라도 닿았던 곳의 실패는 여기에 걸리지 않아 '응답 없음'으로 그대로 보인다.
 export function neverReachedHere(targetId, runs, minRuns = 6) {
-  const recent = (runs || []).filter((r) => r.v && r.r[targetId]).slice(-20);
-  return recent.length >= minRuns && recent.every((r) => r.r[targetId][0] !== 'u');
+  const seen = (runs || []).filter((r) => r.v && r.r[targetId]);
+  return seen.length >= minRuns && seen.every((r) => r.r[targetId][0] === 'd');
 }
 
 export function isOverseasUnreachable(loc, target) {
@@ -22,7 +23,7 @@ export function currentState(target, loc) {
   if (isOverseasUnreachable(loc, target)) return { state: 'unreachable', r };
   const runs = loc.history.runs;
   const prev = runs.length >= 2 ? runs[runs.length - 2].r[target.id] : null;
-  return { state: prev && prev[0] === 'd' ? 'down' : 'flaky', r };
+  return { state: prev && (prev[0] === 'd' || prev[0] === 's') ? 'down' : 'flaky', r };
 }
 
 // 측정 중단 기준. GitHub 예약 실행은 30분 간격으로 걸어도 실제로는 몇 시간씩 밀리므로(2026-10-14~18 실측 중앙값 약 3.5시간)

@@ -82,6 +82,9 @@ test('이력은 7일치만 남긴다', () => {
   const h = appendHistory(old, latest);
   assert.deepEqual(h.runs.map((r) => r.t), ['2026-10-09T00:00:00Z', '2026-10-11T00:00:00Z']);
   assert.deepEqual(h.runs[1].r.a, ['u', 10]);
+  const h2 = appendHistory(null, { location: 'x', measuredAt: '2026-10-11T00:00:00Z', valid: true, results: [
+    { id: 'a', status: 'down', http: 502, ms: 5 }, { id: 'b', status: 'down', http: null, ms: 15000 }] });
+  assert.deepEqual([h2.runs[0].r.a[0], h2.runs[0].r.b[0]], ['s', 'd']); // 5xx는 서버가 답한 것
 });
 
 test('필드 지문이 바뀌면 변경 시각을 남기고, 다음 회차에도 유지한다', () => {
@@ -118,6 +121,11 @@ test('해외 측정: 이 위치에서 한 번도 닿지 않은 곳만 해외에�
   assert.equal(currentState(T['holiday'], loc('holiday', usually)).state, 'down'); // 평소 닿던 곳의 장애는 가리지 않는다
   assert.equal(currentState(T['its'], loc('its', never, 'domestic')).state, 'down'); // 국내 측정은 그대로
   assert.equal(neverReachedHere('its', hist('its', ['d', 'd'])), false); // 이력이 적으면 판단하지 않는다
+  // 서버가 답한 결과(5xx·형식 변경·접근 거부)는 '닿음'으로 센다
+  assert.equal(neverReachedHere('vworld', hist('vworld', ['d', 'd', 'd', 'd', 'd', 'x'])), false);
+  assert.equal(neverReachedHere('vworld', hist('vworld', Array(8).fill('s'))), false); // 늘 502여도 닿은 것
+  // 7일 이력 안에 한 번이라도 닿았으면, 긴 장애도 '닿은 적 없음'으로 덮지 않는다
+  assert.equal(neverReachedHere('holiday', hist('holiday', ['u', ...Array(30).fill('d')])), false);
   assert.ok(!config.targets.some((t) => 'overseasBlocked' in t));
 });
 

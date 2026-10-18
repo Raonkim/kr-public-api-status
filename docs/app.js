@@ -3,9 +3,9 @@ import { currentState, staleThresholdMs, isOverseasUnreachable } from './state.j
 
 const LABEL = {
   up: '응답함', flaky: '일시 실패', down: '응답 없음', changed: '형식 변경', retired: '폐기됨', denied: '접근 거부',
-  unreachable: '이 위치에서 늘 실패', stale: '측정 중단', invalid: '측정 무효', none: '측정 없음',
+  unreachable: '이 위치에서 닿은 적 없음', stale: '측정 중단', invalid: '측정 무효', none: '측정 없음',
 };
-const LONG = { u: 'up', d: 'down', r: 'retired', c: 'changed', x: 'denied' };
+const LONG = { u: 'up', d: 'down', s: 'down', r: 'retired', c: 'changed', x: 'denied' };
 const SPARK = 48; // 최근 48회
 
 const $ = (id) => document.getElementById(id);
@@ -53,22 +53,35 @@ function spark(target, loc) {
 // 서비스별로 다른 것(폐기·형식 변경 등)만 따로 적는다.
 const GATEWAY = '공공데이터포털 게이트웨이';
 
-function gatewayCell(members, loc) {
-  const td = cell(members[0], loc);
+// 묶은 서비스들 중 가장 많은 상태(동률이면 '응답함'이 아닌 쪽)를 대표로 쓴다.
+function gatewayStates(members, loc) {
   const states = members.map((t) => ({ t, ...currentState(t, loc) }));
+  const count = new Map();
+  for (const x of states) count.set(x.state, (count.get(x.state) || 0) + 1);
+  const major = [...count.entries()].sort((a, b) => b[1] - a[1] || (a[0] === 'up') - (b[0] === 'up'))[0][0];
+  return { states, major };
+}
+
+function gatewayCell(members, loc) {
+  const { states, major } = gatewayStates(members, loc);
+  const rep = states.find((x) => x.state === major).t;
+  const td = cell(rep, loc);
   const up = states.filter((x) => x.state === 'up').length;
-  const odd = states.filter((x) => x.state !== states[0].state);
+  const odd = states.filter((x) => x.state !== major);
   td.append(el('div', `서비스 ${members.length}개 중 ${up}개 응답함`, 'up7'));
   for (const x of odd) td.append(el('div', `${x.t.name}: ${LABEL[x.state]}`, 'reason'));
   return td;
 }
 
-// 표 위 한 줄 요약(측정 위치마다)
-function summaryLine(rows, loc) {
+// 표 위 한 줄 요약(측정 위치마다). 게이트웨이는 대표 1개로 세고, 대표와 다른 서비스 상태(폐기 등)는 따로 센다.
+function summaryLine(rows, gateway, loc) {
   const count = new Map();
-  for (const t of rows) {
-    const { state } = currentState(t, loc);
-    count.set(state, (count.get(state) || 0) + 1);
+  const add = (s) => count.set(s, (count.get(s) || 0) + 1);
+  for (const t of rows) add(currentState(t, loc).state);
+  if (gateway.length) {
+    const { states, major } = gatewayStates(gateway, loc);
+    add(major);
+    for (const x of states) if (x.state !== major) add(x.state);
   }
   const order = ['up', 'flaky', 'down', 'unreachable', 'denied', 'changed', 'retired', 'stale', 'invalid', 'none'];
   return order.filter((k) => count.get(k)).map((k) => `${LABEL[k]} ${count.get(k)}`).join(' · ');
@@ -109,8 +122,8 @@ async function main() {
 
   // 게이트웨이 서비스는 대표 1행으로 센다
   const gateway = targets.targets.filter((t) => t.group === GATEWAY);
-  const rows = [...(gateway.length ? [gateway[0]] : []), ...targets.targets.filter((t) => t.group !== GATEWAY)];
-  $('summary').textContent = locs.map((l) => `${l.label} — ${summaryLine(rows, l)}`).join(' / ');
+  const rows = targets.targets.filter((t) => t.group !== GATEWAY);
+  $('summary').textContent = locs.map((l) => `${l.label} — ${summaryLine(rows, gateway, l)}`).join(' / ');
 
   const head = el('tr');
   head.append(el('th', 'API'), el('th', '단계'));
