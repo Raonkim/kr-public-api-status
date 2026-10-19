@@ -2,61 +2,61 @@
  "location": "github-actions",
  "label": "GitHub Actions (해외 클라우드)",
  "scope": "overseas",
- "measuredAt": "2026-10-19T05:11:16.854Z",
+ "measuredAt": "2026-10-19T11:09:26.396Z",
  "valid": true,
  "results": [
   {
    "id": "kma-vilage",
-   "http": 401,
-   "ms": 3010,
-   "status": "up",
-   "reason": "키 없음 응답 정상",
+   "http": null,
+   "ms": 10401,
+   "status": "down",
+   "reason": "시간 초과",
    "schemaChangedAt": null
   },
   {
    "id": "molit-apt",
    "http": null,
-   "ms": 10100,
+   "ms": 10398,
    "status": "down",
    "reason": "시간 초과",
    "schemaChangedAt": null
   },
   {
    "id": "airkorea",
-   "http": 401,
-   "ms": 1846,
-   "status": "up",
-   "reason": "키 없음 응답 정상",
+   "http": null,
+   "ms": 10400,
+   "status": "down",
+   "reason": "시간 초과",
    "schemaChangedAt": null
   },
   {
    "id": "holiday",
-   "http": 401,
-   "ms": 1435,
-   "status": "up",
-   "reason": "키 없음 응답 정상",
+   "http": null,
+   "ms": 10394,
+   "status": "down",
+   "reason": "시간 초과",
    "schemaChangedAt": null
   },
   {
    "id": "bldhub",
-   "http": 401,
-   "ms": 1441,
-   "status": "up",
-   "reason": "키 없음 응답 정상",
+   "http": null,
+   "ms": 10495,
+   "status": "down",
+   "reason": "시간 초과",
    "schemaChangedAt": null
   },
   {
    "id": "tour",
-   "http": 401,
-   "ms": 200,
-   "status": "up",
-   "reason": "키 없음 응답 정상",
+   "http": null,
+   "ms": 10495,
+   "status": "down",
+   "reason": "시간 초과",
    "schemaChangedAt": null
   },
   {
    "id": "odcloud-nts",
    "http": 401,
-   "ms": 4472,
+   "ms": 1367,
    "status": "up",
    "reason": "키 없음 응답 정상",
    "schemaChangedAt": null
@@ -64,7 +64,7 @@
   {
    "id": "seoul-bus",
    "http": 401,
-   "ms": 3513,
+   "ms": 1338,
    "status": "up",
    "reason": "키 없음 응답 정상",
    "schemaChangedAt": null
@@ -72,7 +72,7 @@
   {
    "id": "neis-school",
    "http": 200,
-   "ms": 4240,
+   "ms": 3416,
    "status": "up",
    "reason": "샘플 데이터 정상",
    "fingerprint": "a38a28331cba",
@@ -81,23 +81,23 @@
   {
    "id": "law-drf",
    "http": null,
-   "ms": 10202,
+   "ms": 10124,
    "status": "down",
    "reason": "시간 초과",
    "schemaChangedAt": null
   },
   {
    "id": "kosis",
-   "http": 200,
-   "ms": 2200,
-   "status": "up",
-   "reason": "키 없음 응답 정상",
+   "http": null,
+   "ms": 10229,
+   "status": "down",
+   "reason": "시간 초과",
    "schemaChangedAt": null
   },
   {
    "id": "dart",
    "http": 200,
-   "ms": 1606,
+   "ms": 754,
    "status": "up",
    "reason": "키 없음 응답 정상",
    "schemaChangedAt": null
@@ -105,7 +105,7 @@
   {
    "id": "seoul-air",
    "http": 200,
-   "ms": 3010,
+   "ms": 954,
    "status": "up",
    "reason": "샘플 데이터 정상",
    "fingerprint": "7a7d563ab429",
@@ -113,43 +113,43 @@
   },
   {
    "id": "ecos-tables",
-   "http": null,
-   "ms": 10235,
-   "status": "down",
-   "reason": "시간 초과",
+   "http": 200,
+   "ms": 529,
+   "status": "up",
+   "reason": "샘플 데이터 정상",
    "fingerprint": "4a45174918b6",
-   "fingerprintCarried": true,
    "schemaChangedAt": null
   },
   {
    "id": "kipris",
    "http": 200,
-   "ms": 2505,
+   "ms": 1178,
    "status": "up",
    "reason": "키 없음 응답 정상",
    "schemaChangedAt": null
   },
   {
    "id": "foodsafety-recipe",
-   "http": 200,
-   "ms": 1275,
-   "status": "up",
-   "reason": "샘플 데이터 정상",
+   "http": null,
+   "ms": 10493,
+   "status": "down",
+   "reason": "시간 초과",
    "fingerprint": "013e410cf593",
+   "fingerprintCarried": true,
    "schemaChangedAt": null
   },
   {
    "id": "juso",
-   "http": 200,
-   "ms": 823,
-   "status": "up",
-   "reason": "키 없음 응답 정상",
+   "http": null,
+   "ms": 10209,
+   "status": "down",
+   "reason": "시간 초과",
    "schemaChangedAt": null
   },
   {
    "id": "vworld",
    "http": 502,
-   "ms": 960,
+   "ms": 837,
    "status": "down",
    "reason": "서버 오류 HTTP 502",
    "schemaChangedAt": null
@@ -157,7 +157,7 @@
   {
    "id": "kma-apihub",
    "http": 401,
-   "ms": 1958,
+   "ms": 1397,
    "status": "up",
    "reason": "키 없음 응답 정상",
    "schemaChangedAt": null
@@ -165,7 +165,7 @@
   {
    "id": "its",
    "http": null,
-   "ms": 10120,
+   "ms": 10123,
    "status": "down",
    "reason": "시간 초과",
    "schemaChangedAt": null
