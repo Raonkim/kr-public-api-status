@@ -136,3 +136,12 @@ test('측정 중단 기준은 실제 측정 간격에 맞춘다', async () => {
   assert.equal(staleThresholdMs(runs([0, 200, 410, 620])), 3 * 210 * 60000);
   assert.equal(staleThresholdMs([]), 90 * 60000);
 });
+
+test('해외 측정에서 여러 곳이 한꺼번에 연결 실패하면 회차를 무효로 본다', async () => {
+  const { massConnectFailure } = await import('./lib.mjs');
+  const r = (n, http = null) => Array.from({ length: n }, (_, i) => ({ id: `x${i}`, status: 'down', http }));
+  assert.equal(massConnectFailure(r(6)), true);
+  assert.equal(massConnectFailure(r(5)), false);
+  assert.equal(massConnectFailure(r(8, 502)), false); // 5xx는 서버가 답한 것
+  assert.equal(massConnectFailure([...r(3), { id: 'u', status: 'up', http: 200 }]), false);
+});

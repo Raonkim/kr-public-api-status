@@ -96,3 +96,11 @@ export function carrySchema(prev, results, measuredAt) {
 export function upsertLocation(locations, entry) {
   return [...(locations || []).filter((l) => l.id !== entry.id), entry].sort((a, b) => a.id.localeCompare(b.id));
 }
+
+// 해외 측정에서 여러 곳이 한꺼번에 연결되지 않으면(측정 회선 확인은 통과) 그 회차의 러너 IP가 한국 쪽에서 막힌 것으로 본다.
+// 2026-10-18~25 실측: 42회 중 5회가 10~12곳 동시 시간 초과였고, 같은 시각 한국 회선에서는 정상이었다.
+// 해외 측정만으로는 '국내 전체 장애'와 구분할 수 없으므로 장애로 단정하지 않고 그 회차를 무효로 뺀다.
+export const MASS_FAILURE = 6;
+export function massConnectFailure(results, threshold = MASS_FAILURE) {
+  return results.filter((r) => r.status === 'down' && r.http == null).length >= threshold;
+}

@@ -6,7 +6,7 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { classify, classifyError, appendHistory, carrySchema, upsertLocation } from './lib.mjs';
+import { classify, classifyError, appendHistory, carrySchema, upsertLocation, massConnectFailure } from './lib.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const TIMEOUT_MS = 15000;
@@ -85,7 +85,8 @@ async function main() {
   const valid = await networkOk(config.networkCheck);
   const raw = await runAll(config.targets);
   const results = carrySchema(prev, raw, measuredAt);
-  const latest = { location, label, scope, measuredAt, valid, results };
+  const massBlocked = scope === 'overseas' && massConnectFailure(results);
+  const latest = { location, label, scope, measuredAt, valid: valid && !massBlocked, ...(massBlocked ? { invalidReason: 'mass-connect-failure' } : {}), results };
   const history = appendHistory(await readJson(join(outDir, 'history.json')), latest);
 
   await writeFile(join(outDir, 'latest.json'), JSON.stringify(latest, null, 1) + '\n');

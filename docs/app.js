@@ -115,7 +115,9 @@ async function main() {
   $('updated').textContent = locs.map((l) => {
     let s = `${l.label}: 마지막 측정 ${kst(l.latest.measuredAt)}`;
     if (l.stale) s += ' (측정이 멈춘 상태입니다. 아래 상태는 현재가 아닙니다)';
-    else if (!l.latest.valid) s += ' (측정 쪽 회선 문제로 이번 회차는 무효)';
+    else if (!l.latest.valid) s += l.latest.invalidReason === 'mass-connect-failure'
+      ? ' (여러 곳이 한꺼번에 연결되지 않아 측정 위치가 막힌 것으로 보고 이번 회차는 무효)'
+      : ' (측정 쪽 회선 문제로 이번 회차는 무효)';
     return s;
   }).join(' · ');
   $('overseas-only').hidden = !locs.every((l) => l.scope === 'overseas');
